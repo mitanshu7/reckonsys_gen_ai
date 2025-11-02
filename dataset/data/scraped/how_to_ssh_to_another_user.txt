@@ -1,0 +1,118 @@
+
+
+
+
+
+
+
+
+
+
+How to SSH to another user
+
+
+
+Home
+
+How to SSH to another user
+Or copy your public SSH key to another user
+in the same system
+Mitanshu Sukhwani
+2025-06-07
+
+To copy your public SSH key to another user in the same system, you
+can follow these steps. Assuming you have sudo rights,
+you can perform actions as another user.
+Let’s also assume:
+
+Your username is user1.
+The target user is user2.
+
+Here’s how you can do it:
+
+Switch to the target user:
+Open a terminal and switch to the target user. You can use
+sudo to execute commands as another user.
+sudo su - user2
+Create the .ssh directory if it doesn’t
+exist:
+Ensure that the .ssh directory exists in the target
+user’s home directory and has the correct permissions.
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+Copy your public SSH key to the target user’s
+authorized_keys file:
+Exit back to your original user and then copy your public key to the
+target user’s authorized_keys.
+exit
+cat ~/.ssh/id_rsa.pub | sudo tee -a /home/user2/.ssh/authorized_keys
+Set the correct permissions for the
+authorized_keys file:
+Ensure the authorized_keys file has the correct
+permissions.
+sudo chmod 600 /home/user2/.ssh/authorized_keys
+sudo chown user2:user2 /home/user2/.ssh/authorized_keys
+
+Now, your public SSH key should be copied to the target user’s
+authorized_keys file, and you should be able to SSH into
+the target user’s account without a password.
+Script
+Here’s a shell script that automates the process of copying your
+public SSH key to another user’s authorized_keys file. This
+script takes the target username as an argument and handles all the
+necessary steps, including permission checks and creating directories if
+needed.
+#!/bin/bash
+
+# Script to copy your public SSH key to another user's authorized_keys file
+
+# Check if the target username is provided
+if [ -z "$1" ]; then
+echo "Usage: $0 target_username"
+exit 1
+fi
+
+TARGET_USER=$1
+TARGET_HOME=$(eval echo ~$TARGET_USER)
+TARGET_SSH_DIR="$TARGET_HOME/.ssh"
+AUTHORIZED_KEYS="$TARGET_SSH_DIR/authorized_keys"
+
+# Check if the public key exists
+if [ ! -f ~/.ssh/id_rsa.pub ]; then
+echo "Your public SSH key (~/.ssh/id_rsa.pub) does not exist. Please generate it first."
+exit 1
+fi
+
+# Ensure the target .ssh directory exists with correct permissions
+sudo mkdir -p "$TARGET_SSH_DIR"
+sudo chmod 700 "$TARGET_SSH_DIR"
+sudo chown $TARGET_USER:$TARGET_USER "$TARGET_SSH_DIR"
+
+# Append the public key to the target user's authorized_keys file
+cat ~/.ssh/id_rsa.pub | sudo tee -a "$AUTHORIZED_KEYS" > /dev/null
+
+# Ensure the authorized_keys file has the correct permissions
+sudo chmod 600 "$AUTHORIZED_KEYS"
+sudo chown $TARGET_USER:$TARGET_USER "$AUTHORIZED_KEYS"
+
+echo "Public SSH key successfully copied to $TARGET_USER's authorized_keys file."
+Usage
+
+Save the script to a file, for example
+copy_ssh_key.sh.
+Make the script executable:
+chmod +x copy_ssh_key.sh
+Run the script with the target username as an argument:
+./copy_ssh_key.sh target_username
+
+Replace target_username with the actual username of the
+target user. For example:
+./copy_ssh_key.sh user2
+This script will check if your public SSH key exists, ensure the
+target user’s .ssh directory and
+authorized_keys file have the correct permissions, and
+append your public SSH key to the target user’s
+authorized_keys file.
+Back to Home
+
+

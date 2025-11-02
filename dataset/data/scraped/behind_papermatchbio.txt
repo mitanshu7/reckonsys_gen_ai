@@ -1,0 +1,328 @@
+
+
+
+
+
+
+
+
+
+
+Behind PaperMatchBio
+
+
+
+Home
+
+Behind PaperMatchBio
+Extending PaperMatch to bioRxiv
+Mitanshu Sukhwani
+2025-06-08
+
+Why bioRxiv?
+If you have used PaperMatch
+before, you would know you can only use the semantic search on the arXiv repository. One of the main features
+of a literature search is scope. How broad can you search? Can you
+search all the big name journals to only look for top peer-reviewed
+journals/conferences? Well, I am not there yet. So let’s look at a
+sister preprint repository, biorxiv.org.
+Simply stated, bioRxiv is arXiv but for bio.
+How to gather the data?
+bioRxiv allows for machine
+access via Amazon S3 at a requester
+pays bucket. So this requires us to have an aws account with a
+working card to be able to mine the bucket for full text access and
+relinquish our fortunes. Just kidding, its quite cheap to be making all
+those requests. It cost me about ₹66.24 ($0.77) for all of bioRxiv till
+April 2025.
+NOTE: AWS S3 has become very costly and is frankly excessive for the
+use case. I will update with a new method soon. The following will AWS
+tutorial will cost you a lot and hence is not reccomended!
+I’ll be honest. I do not have the kind of stable electricity nor the
+bandwidth (internet one) to be mining all of bioRxiv on my laptop.
+Thankfully, good friends at HuggingFace let you host your gradio apps for free! These demo’s
+basically run on small VMs. So, I used their Hello World example to have a fake
+storefront while downloading the bioRxiv repo in the background. Thanks
+🤗 :)
+Assuming You have your aws account created
+and billing
+setup along with your access
+key id and secret, we’ll move onto getting the sweet sweet data.
+Python is the language of
+choice for AI/ML and that is the one I know, so we’ll be using that.
+Boto3
+is a python library to use when interactive with AWS S3 buckets. bioRxiv
+hosts there bucket at s3://biorxiv-src-monthly in the
+us-east-1 region.
+import boto3
+
+# AWS S3 service name
+service_name = 's3'
+
+# AWS S3 bucket name
+biorxiv_bucket_name = 'biorxiv-src-monthly'
+
+# AWS region name
+region_name = 'us-east-1'
+Next we will setup the client:
+import os
+
+print("Initiating clients.")
+
+# Create a S3 client
+s3_client = boto3.client(
+    service_name='s3',
+    region_name=region_name,
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+)
+paginator = s3_client.get_paginator('list_objects_v2')
+I also want the extracted data to be saved somewhere persistant,
+since HuggingFace Spaces are
+ephemeral. For saving the data, we will again be using the HuggingFace Datasets.
+from huggingface_hub import HfApi
+
+# Create a Hugging Face API client
+access_token =  os.getenv('HF_API_KEY')
+hugging_face_api = HfApi(token=access_token)
+
+# Create a dataset repo
+hugging_face_api.create_repo(
+    repo_id=destination_repo_name,
+    repo_type="dataset",
+    private=False,
+    exist_ok=True
+)
+Let’s verify the setup once:
+# Extract Hugging face username
+username = hugging_face_api.whoami()['name']
+repo_id = f"{username}/{destination_repo_name}"
+bioRxiv stores their data in .meca files. Which are
+nothing but renamed .zip files. Does anyone know why not
+just use good ol’ zip? Anywho, once you unzip the .meca
+files, you will find the contents. There will be an XML
+file with the full text in there sitting nicely, along with some figures
+which were used to create the final PDF. We only care about
+the XML at this point. So lets get that!
+import zipfile
+from glob import glob
+import shutil
+from tqdm.auto import tqdm
+
+def download_biorxiv(Prefix=""):
+
+    print("Downloading Biorxiv files.")
+
+    # Output folders for downloaded files
+    biorxiv_output_folder = Prefix + 'biorxiv-xml-dump'
+
+    # Create output folders if they don't exist
+    os.makedirs(biorxiv_output_folder, exist_ok=True)
+
+    # Gather all objects from Biorxiv bucket
+    biorxiv_pages = paginator.paginate(
+        Bucket=biorxiv_bucket_name,
+        RequestPayer='requester',
+        Prefix=Prefix
+    ).build_full_result()
+
+    # Dowload all objects from Biorxiv bucket
+    for biorxiv_object in tqdm(biorxiv_pages['Contents'], desc=Prefix):
+
+        # Get the file name
+        file = biorxiv_object['Key']
+
+        # Check if the file is a zip file
+        if file.endswith(".meca"):
+
+            # Proccess the zip file
+            try:
+
+                # Download the file
+                s3_client.download_file(biorxiv_bucket_name, file, 'tmp_bio.meca', ExtraArgs={'RequestPayer':'requester'})
+
+                # Unzip meca file
+                with zipfile.ZipFile('tmp_bio.meca', 'r') as zip_ref:
+                    zip_ref.extractall("tmp_bio")
+
+                # Gather the xml file
+                xml = glob('tmp_bio/content/*.xml')
+
+                # Copy the xml file to the output folder
+                shutil.copy(xml[0], biorxiv_output_folder)
+
+                # Remove the tmp_bio folder and file
+                shutil.rmtree('tmp_bio')
+                os.remove('tmp_bio.meca')
+
+            except Exception as e:
+
+                print(f"Error processing file {file}: {e}")
+
+
+    # Zip the output folder
+    shutil.make_archive(biorxiv_output_folder, 'zip', biorxiv_output_folder)
+
+    # Upload the zip files to Hugging Face
+    print(f"Uploading {biorxiv_output_folder}.zip to Hugging Face repo {repo_id}.")
+    hugging_face_api.upload_file(path_or_fileobj=f'{biorxiv_output_folder}.zip', path_in_repo=f'{biorxiv_output_folder}.zip', repo_id=repo_id, repo_type="dataset")
+
+    print("Biorxiv Done.")
+Once all the XML files have been extracted, we zip the output folder
+and upload to HF Datasets. However, we want to be doing this on HF
+Spaces, for that, we will create a new thread to let the process happed
+there:
+import threading
+
+# Create separate threads function
+first_thread = threading.Thread(target=download_biorxiv, args=("Current_Content/September_2024/",))
+
+# Start thread
+first_thread.start()
+And here is the storefront:
+import gradio as gr
+# Dummy app
+def greet(name, intensity):
+    return "Hello, " + name + "!" * int(intensity)
+
+demo = gr.Interface(
+    fn=greet,
+    inputs=["text", "slider"],
+    outputs=["text"],
+)
+
+demo.launch()
+Just create an app.py on HF Spaces, add the requirements file, add
+your credentials to the space, and see the data coming your way!
+All of this code is available on mitanshu7/tdm.
+How to get the metadata?
+In PaperMatchBio, I use abstracts as the source data for calculating
+vector embeddings. To learn more. checkout my post on Behind PaperMatch.
+Good thing about XMLs is that they have a nice structure
+to them and you can use that to find the needed information quickly. For
+this, we use BeautifulSoup4.
+def extract_info(xml_file):
+
+    try:
+
+        # Open and read the XML file
+        with open(xml_file, 'r') as f:
+            data = f.read()
+
+        # Parse the XML data
+        soup = BeautifulSoup(data, 'xml')
+
+        # Get abstract
+        abstract = soup.find('abstract').get_text(separator=" ",strip=True)
+
+        # Get doi
+        doi = soup.find('article-id', {'pub-id-type': 'doi'}).get_text()
+
+        # Get article title
+        article_title = soup.find('article-title').get_text(separator=" ",strip=True)
+
+        # Get author names
+        authors = soup.find_all('contrib', {'contrib-type':"author"})
+        author_names = [res.get_text(separator=" ", strip=True)
+                for author in authors
+                if (res := author.find('name')) is not None]
+
+        # Return dictionary
+        return {
+            "id": doi,
+            "Title": article_title,
+            "Authors": ', '.join(author_names), # Convert list of authors to one string
+            "Abstract": abstract,
+            "URL": f"https://doi.org/{doi}" # Construct URL from DOI
+        }
+
+    except Exception as e:
+        with open(f'{prefix}rxiv_metadata_errors.txt', 'a') as f:
+            f.write(f"Error processing file {xml_file}: {e}\n")
+        return None
+We also use some multiprocessing to speed up the extraction time.
+# Extract information from XML files
+print(f"Extracting information from {len(xml_files)} XML files")
+
+if __name__ == '__main__':
+    with mp.Pool(processes=mp.cpu_count()) as pool:
+        results = pool.map(extract_info, xml_files)
+
+    # Remove None values
+    results = [result for result in results if result is not None]
+
+    # Convert list of dictionaries to DataFrame
+    df = pd.DataFrame(results)
+
+    # Save DataFrame to Parquet file
+    df.to_parquet(output_file, index=False)
+
+    # Print time taken
+    print(f"Time taken: {time() - start} seconds")
+What about vectors?
+To start with, we (again) extract the abstract from the XMLs (I don’t
+know why I did not reuse the metadata above) and embed the abstracts
+saving their doi along with them.
+# Function to
+def extract_abstract_doi(xml_file):
+
+    with open(xml_file, 'r') as f:
+        data = f.read()
+
+    # Parse the XML data
+    soup = BeautifulSoup(data, 'xml')
+
+    # Get abstract
+    abstract = soup.find('abstract').get_text(separator=" ",strip=True)
+
+    # Get doi
+    doi = soup.find('article-id', {'pub-id-type': 'doi'}).get_text()
+
+    # Return dictionary
+    return {'doi': doi, 'abstract': abstract}
+
+
+# Function that does the embedding
+def embed(input_text):
+
+    # Calculate embeddings by calling model.encode(), specifying the device
+    embedding = model.encode(input_text, device=device)
+
+    return embedding
+This time create anther parquet file to store the embeddings.
+# Create an empty DataFrame to store the results
+df = pd.DataFrame(columns=['id', 'vector'])
+
+# Loop through each XML file
+print(f"Looping through {len(xml_files)} XML files")
+for xml_file in tqdm(xml_files):
+
+    try:
+        # Extract abstract and doi
+        abstract_doi = extract_abstract_doi(xml_file)
+
+        # Create embedding
+        embedding = embed(abstract_doi['abstract'])
+
+        # Create a dataframe row
+        row = pd.DataFrame({'id': abstract_doi['doi'], 'vector': [embedding]})
+
+        # Append the row to the DataFrame
+        df = pd.concat([df, row], ignore_index=True)
+
+    except Exception as e:
+        with open('bioarxiv_errors.txt', 'a') as f:
+            f.write(f"Error processing file {xml_file}: {e}\n")
+
+# Save the DataFrame to a Paquet file
+print(f"Saving DataFrame to parquet file: {output_file}")
+df.to_parquet(output_file)
+Now we can merge both and have a final dataset that can be inserted
+into Milvus.
+# Merge dataframes on 'id'
+merged = pd.merge(embeddings, metadata, on='id')
+All of this code can be found at mitanshu7/embed_xml.
+Phew! Now we follow a very similar setup to the one we saw in Behind PaperMatch.
+Back to Home
+
+

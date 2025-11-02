@@ -1,0 +1,320 @@
+
+
+
+
+
+Benchmark of factotum / GNU/Linux on Thu Jul 17 2025
+
+
+
+Benchmark of factotum / GNU/Linux on Thu Jul 17 2025
+BYTE UNIX Benchmarks (Version 6.0.0)
+Test System Information
+
+
+System:
+factotum: GNU/Linux
+
+OS:
+GNU/Linux -- 6.12.0-100.28.2.2.el9uek.aarch64 -- #1 SMP Sun Jun 29 03:38:17 PDT 2025
+
+Machine:
+aarch64: aarch64
+
+Language:
+en_US.utf8 (charmap="UTF-8", collate="UTF-8")
+
+
+CPUs:
+0:
+ARM Neoverse-N1 (50.0 bogomips)
+       CPU Features: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp
+
+
+1:
+ARM Neoverse-N1 (50.0 bogomips)
+       CPU Features: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp
+
+
+2:
+ARM Neoverse-N1 (50.0 bogomips)
+       CPU Features: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp
+
+
+3:
+ARM Neoverse-N1 (50.0 bogomips)
+       CPU Features: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp
+
+
+Uptime:
+18:23:12 up  4:10,  2 users,  load average: 0.26, 0.10, 0.09; runlevel 2025-07-17
+
+
+
+Benchmark Run: 4 CPUs; 1 parallel process
+Time: 18:23:12 - 18:52:38; 29m 26s
+System Benchmarks
+
+
+Test
+Score
+Unit
+Time
+Iters.
+Baseline
+Index
+
+
+Dhrystone 2 using register variables
+45477589.4
+lps
+10.0 s
+7
+116700.0
+3897.0
+
+
+Double-Precision Whetstone
+8629.0
+MWIPS
+9.9 s
+7
+55.0
+1568.9
+
+
+Execl Throughput
+3541.4
+lps
+30.0 s
+2
+43.0
+823.6
+
+
+File Copy 1024 bufsize 2000 maxblocks
+896426.2
+KBps
+30.0 s
+2
+3960.0
+2263.7
+
+
+File Copy 256 bufsize 500 maxblocks
+246158.2
+KBps
+30.0 s
+2
+1655.0
+1487.4
+
+
+File Copy 4096 bufsize 8000 maxblocks
+1895452.1
+KBps
+30.0 s
+2
+5800.0
+3268.0
+
+
+Pipe Throughput
+1655852.8
+lps
+10.0 s
+7
+12440.0
+1331.1
+
+
+Pipe-based Context Switching
+122682.6
+lps
+10.0 s
+7
+4000.0
+306.7
+
+
+Process Creation
+6341.0
+lps
+30.0 s
+2
+126.0
+503.3
+
+
+Shell Scripts (1 concurrent)
+6089.5
+lpm
+60.0 s
+2
+42.4
+1436.2
+
+
+Shell Scripts (8 concurrent)
+1984.5
+lpm
+60.0 s
+2
+6.0
+3307.5
+
+
+System Call Overhead
+1271353.9
+lps
+10.0 s
+7
+15000.0
+847.6
+
+
+System Benchmarks Index Score:
+1375.4
+
+
+
+Benchmark Run: 4 CPUs; 4 parallel processes
+Time: 18:52:38 - 19:20:35; 27m 57s
+System Benchmarks
+
+
+Test
+Score
+Unit
+Time
+Iters.
+Baseline
+Index
+
+
+Dhrystone 2 using register variables
+179908983.4
+lps
+10.0 s
+7
+116700.0
+15416.4
+
+
+Double-Precision Whetstone
+34217.8
+MWIPS
+9.9 s
+7
+55.0
+6221.4
+
+
+Execl Throughput
+8294.7
+lps
+30.0 s
+2
+43.0
+1929.0
+
+
+File Copy 1024 bufsize 2000 maxblocks
+3137810.5
+KBps
+30.0 s
+2
+3960.0
+7923.8
+
+
+File Copy 256 bufsize 500 maxblocks
+973156.3
+KBps
+30.0 s
+2
+1655.0
+5880.1
+
+
+File Copy 4096 bufsize 8000 maxblocks
+6237225.2
+KBps
+30.0 s
+2
+5800.0
+10753.8
+
+
+Pipe Throughput
+6553875.7
+lps
+10.0 s
+7
+12440.0
+5268.4
+
+
+Pipe-based Context Switching
+1069525.6
+lps
+10.0 s
+7
+4000.0
+2673.8
+
+
+Process Creation
+16203.1
+lps
+30.0 s
+2
+126.0
+1286.0
+
+
+Shell Scripts (1 concurrent)
+14477.1
+lpm
+60.0 s
+2
+42.4
+3414.4
+
+
+Shell Scripts (8 concurrent)
+2072.1
+lpm
+60.0 s
+2
+6.0
+3453.5
+
+
+System Call Overhead
+5042739.2
+lps
+10.0 s
+7
+15000.0
+3361.8
+
+
+System Benchmarks Index Score:
+4486.8
+
+
+
+No Warranties: This information is provided free of charge and "as
+is" without any warranty, condition, or representation of any kind,
+either express or implied, including but not limited to, any warranty
+respecting non-infringement, and the implied warranties of conditions
+of merchantability and fitness for a particular purpose. All logos or
+trademarks on this site are the property of their respective owner. In
+no event shall the author be liable for any
+direct, indirect, special, incidental, consequential or other damages
+howsoever caused whether arising in contract, tort, or otherwise,
+arising out of or in connection with the use or performance of the
+information contained on this web site.
+
+

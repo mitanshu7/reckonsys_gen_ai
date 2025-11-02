@@ -1,0 +1,260 @@
+
+
+
+
+
+
+
+
+
+
+N-gram Language Models
+
+
+
+
+Home
+
+N-gram Language Models
+A Bigram Model on Jane Austen’s Pride and
+Prejudice
+Mitanshu Sukhwani
+2025-06-08
+
+“We
+can avail himself, appear unpleasant in acknowledgment that Edmund only
+took Fanny because Mary shocked him”
+-
+Random sentence generated from a Jane Austen bigram model
+Right off the bat, for learning Natural Language Processing (NLP),
+checkout Speech and
+Language Processing by Dan Jurafsky and James H. Martin.
+Theory
+Ever since ChatGPT got viral in November 2022, Language models have
+taked the world by a storm. AI is being shoved into each and every
+application, even the ones that really don’t need it. Applied AI has
+become finding solutions to problems that do not exist. But today, I
+would like to shine some light on LLMs humble beginnings. N-Grams.
+One thing to know about LLMs is that they are autoregressive
+models. They try to predict the next word given some past words. For
+example, LLMs have to learn to predict that the word coming after
+‘The cat sat on a’ is ‘mat’.
+N-gram models are a very simple form of language models. An n-gram
+model estimates the probability of the next item given the n−1 previous
+items.
+\[ P(w_i | w_{i - (n-1)}, ..., w_{i-1}) =
+\frac{count(w_{i - (n-1)}, ..., w_{i-1},w_i)}{count(w_{i - (n-1)}, ...,
+w_{i-1})} \]
+For a bigram, \(N = 2\),
+\[ P(I, saw, the, red, house) \approx
+P(I|\langle s \rangle) \times P(saw|I) \times P(the|saw)\]
+\[ \times P(red|the) \times P(house|red)
+\times P(\langle /s \rangle | house) \]
+where start and end of sentence markers are denoted by \(\langle s \rangle\) & \(\langle /s \rangle\) respectively.
+Markov
+Processes lean into the same idea. A Markov chain assumes that
+future states depend only on the current state, not on the events that
+occurred before it.
+
+
+A two-state Markov process.
+
+Armed with the theory, let’s code up a Bigram model on Pride and
+Prejudice by Jane Austen from Project Gutenberg.
+Code
+Find the colab notebook here!
+We restrict ourselves to only use the standard python library.
+# For regex
+import re
+Preprocessing
+We read the file and notice that the txt has been formatted with a
+lot of newlines to fit into viewport, so we remove it.
+# Read file
+with open(file='pride_and_prejudice.txt', mode="r") as file:
+    corpus = file.read()
+...
+                                PRIDE.
+                                  and
+                               PREJUDICE
+
+                                  by
+                             Jane Austen,
+
+                           with a Preface by
+                           George Saintsbury
+                                  and
+                           Illustrations by
+                             Hugh Thomson
+
+                         [Illustration: 1894]
+
+                       Ruskin       156. Charing
+                       House.        Cross Road.
+
+                                London
+                             George Allen.
+...
+# Replace newlines with a space
+corpus_no_enter = corpus.replace("\n"," ")
+...
+PRIDE.                                   and                                PREJUDICE                                    by                              Jane Austen,                             with a Preface by                            George Saintsbury                                   and                            Illustrations by                              Hugh Thomson                           [Illustration: 1894]                         Ruskin       156. Charing                        House.        Cross Road.                                  London                              George Allen.
+...
+Let’s do a very basic form of tokenization. Tokenization is nothing
+but a way to split up text. You can split up the text into paragraphs,
+lines, words, charaters or based on the whitespaces.
+# Make a list with sentences
+# Use . or ! or ? and End of Sentence markers
+# Do not split the URL. https://superuser.com/questions/1843857/what-is-the-maximum-length-of-a-domain-name
+
+corpus_split = re.split(r"(\.|!|\?)[^(\b(www\.)?\w+\.\w+{2,6}(\.\w{2,6})?\b){,253}]", corpus_no_enter)
+['\ufeffThe Project Gutenberg eBook of Pride and Prejudice      This ebook is for the use of anyone anywhere in the United States and most other parts of the world at no cost and with almost no restrictions whatsoever',
+ '.',
+ 'You may copy it, give it away or re-use it under the terms of the Project Gutenberg License included with this ebook or online at www.gutenberg.org',
+ '.',...]
+This splits our text into sentences and punctuation.
+# Add back the punctuation
+corpus_split_refined = []
+
+for i in range(0, len(corpus_split), 2):
+
+    try:
+        corpus_split_refined.append(corpus_split[i]+corpus_split[i+1])
+
+    except IndexError:
+        pass
+['\ufeffThe Project Gutenberg eBook of Pride and Prejudice      This ebook is for the use of anyone anywhere in the United States and most other parts of the world at no cost and with almost no restrictions whatsoever.',
+ 'You may copy it, give it away or re-use it under the terms of the Project Gutenberg License included with this ebook or online at www.gutenberg.org.',...]
+Now that we have a list of sentences, we can spruce it up a
+little.
+# Fix the refined text
+for i in range(len(corpus_split_refined)):
+
+    # Remove whitespace around the text
+    corpus_split_refined[i] = corpus_split_refined[i].strip()
+
+    # Tokenize using white space
+    corpus_split_refined[i] = corpus_split_refined[i].split()
+
+    # Add start and end of sentence markers
+    corpus_split_refined[i] = ['<s>'] + corpus_split_refined[i] + ['</s>']
+[['<s>',
+  '\ufeffThe',
+  'Project',
+  'Gutenberg',
+  'ebook',
+    ...,
+  'other',
+  'parts',
+  'no',
+  'restrictions',
+  'whatsoever.',
+  '</s>'],
+ ['<s>',
+  'You',
+  'may',
+  'copy',
+  ...]
+]
+For a bigram, we need pairs of words, since we only use the immediate
+history to predict the next word.
+pairs = []
+
+for sentence in corpus_split_refined:
+
+    for index, word in enumerate(sentence):
+
+        try:
+            pairs.append((word, sentence[index+1]))
+
+        except IndexError:
+            pass
+[('<s>', '\ufeffThe'),
+ ('\ufeffThe', 'Project'),
+ ('Project', 'Gutenberg'),
+ ('Gutenberg', 'eBook'),
+ ('eBook', 'of'),
+ ('of', 'Pride'),...]
+Calculations
+To calculate probability, we will need to reconstruct the nested list
+to a single list.
+sample_restructured = []
+
+for inner_list in sample:
+
+    for token in inner_list:
+
+        sample_restructured.append(token)
+['<s>',
+ '\ufeffThe',
+ 'Project',
+ 'Gutenberg',
+ ...,
+ 'no',
+ 'restrictions',
+ 'whatsoever.',
+ '</s>',
+ '<s>',
+ 'You',
+ 'may',
+ ...]
+Now let’s precompute the probability of each pair of words occuring
+in the whole corpus.
+pair_probability = {}
+
+for pair in pairs:
+
+    probab = pairs.count(pair) / sample_restructured.count(pair[0])
+    pair_probability[pair] = probab
+{('<s>', '\ufeffThe'): 0.001,
+ ('\ufeffThe', 'Project'): 1.0,
+ ('Project', 'Gutenberg'): 1.0,
+ ('Gutenberg', 'eBook'): 0.5,
+ ('eBook', 'of'): 1.0,
+ ('of', 'Pride'): 0.001876172607879925,
+ ...]
+We are almost done, now we just need a function to predict the next
+word, given a probability distribution. We select the top candidate in
+the list. This is where the concept of temperature comes into picture.
+Here we select the most probable word, grounding our model in data and
+keeping the temperature 0. Had we played roullete with the list of
+possible candidates, we would have generated more creative
+answers, thereby increasing the temperature of the model.
+def bigram(current_word:str) -> str:
+
+    possible_predicitons = {}
+
+    for key, value in pair_probability.items():
+
+        if current_word == key[0]:
+            possible_predicitons[key] = value
+
+    # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+    next_word = sorted(possible_predicitons.items(), key=lambda item:item[1])[0]
+
+    return next_word[0][1]
+For example,
+bigram('of')
+gives us
+'Pride'
+This is fun! Lets generate more!
+Generation
+# Iteratively generate sentence
+generated_word = "We"
+generated_sentence = ""
+
+for i in range(100):
+
+    generated_sentence = generated_sentence + generated_word + ' '
+
+    if generated_word=='</s>':
+        break
+
+    generated_word = bigram(generated_word)
+'We can avail himself, appear unpleasant in acknowledgment that Edmund only took Fanny because Mary shocked him, if many men appears) is small, and PREJUDICE by Jane Austen Release date: June 1, 1998 [eBook #1342] Most recently updated: October 29, 2024 Language: English Credits: Chuck Greif and PREJUDICE by Jane Austen Release date: June 1, 1998 [eBook #1342] Most recently updated: October 29, 2024 Language: English Credits: Chuck Greif and PREJUDICE by Jane Austen Release date: June 1, 1998 [eBook #1342] Most recently updated: October 29, 2024 Language: English Credits: Chuck Greif and PREJUDICE by Jane Austen Release date: June '
+Bonus!
+For the astute, you will notice that the generation repeats itself
+after a pattern. There are possible loops in generations and many of you
+know this as Hallucinations.
+Back to Home
+
+

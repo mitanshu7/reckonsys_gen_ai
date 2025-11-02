@@ -1,0 +1,75 @@
+
+
+
+
+
+
+
+
+
+
+Stop podman containers from getting killed
+
+
+
+Home
+
+Stop podman containers from getting killed
+Keep rootless Podman containers running
+after logout or reboot
+Mitanshu Sukhwani
+2025-06-06
+
+
+Run the podman containers without a restart
+policy.
+Issue command:
+loginctl enable-linger $user
+
+
+WARNING systemd support is deprecated in podman, see
+quadlets.
+
+
+Enable service using:
+podman generate systemd --files --name $container,
+where $container is your container id.
+In the service file, change
+[Install]
+WantedBy=multi-user.target
+to
+[Install]
+WantedBy=default.target
+if not done already by the generated service.
+We can copy the file to
+~/.config/systemd/user/container-foo.service
+If the directory doesnt exist,
+create it mkdir -p ~/.config/systemd/user/,
+copy the service
+filecp container*service ~/.config/systemd/user/,
+and then issue:
+systemctl --user daemon-reload
+Start a rootless container via
+systemctl --user start container-foo.service
+To persist reboots, also issue command:
+systemctl --user enable container-foo.service
+Stop a rootless container via
+systemctl --user stop container-foo.service
+
+Now the containers should live through the logout sessions (2) and
+reboots (7)
+References
+
+rootless
+systemd restarting containers when I log out of a shell
+Running
+containers with Podman and shareable systemd services
+Why
+doesn’t my systemd user unit start at boot?
+
+Suggested reading
+Quadlet: Running Podman
+containers under systemd
+Back to Home
+
+

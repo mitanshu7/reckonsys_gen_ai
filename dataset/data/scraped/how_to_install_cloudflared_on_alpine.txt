@@ -1,0 +1,105 @@
+
+
+
+
+
+
+
+
+
+
+How to Install Cloudflared on Alpine
+
+
+
+Home
+
+How to Install Cloudflared on Alpine
+For Raspberry Pi Zero 2W
+Mitanshu Sukhwani
+2025-06-07
+
+Cloudflared Setup Guide
+This guide will walk you through setting up Cloudflared on your
+system.
+Pre-Requisites
+You need to have administrative (doas) access to your system.
+Add nano editor using:
+doas apk update && doas apk add nano
+Here are the steps to install Cloudflared.
+# Download the latest version of cloudflared, change `arm64` to `arm` at the end of the URL for 32-bit version.
+doas wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 -O /usr/bin/cloudflared
+
+# Give executable permissions to the downloaded file
+doas chmod +x /usr/bin/cloudflared
+
+# Check the version of cloudflared to confirm the installation
+cloudflared -v
+Creating a Cloudflare Tunnel
+After installing Cloudflared, you need to create a Cloudflare
+tunnel.
+
+Visit https://one.dash.cloudflare.com.
+Navigate to
+Networks -> Tunnels -> Create a tunnel.
+Fill in a name you like and save the tunnel.
+Find the code block below
+After you have installed cloudflared on your machine, you can install a service to automatically run your tunnel whenever your machine starts:.
+Replace sudo with doas before
+executing. Make note of the your <TOKEN> which comes
+after sudo cloudflared service install
+
+Starting
+the Cloudflared Service, while sustaining reboots
+To automatically start the Cloudflared service on your machine,
+follow the steps below:
+# Backup the original SysVinit file created by Cloudflared
+doas mv /etc/init.d/cloudflared /etc/init.d/cloudflared.bak
+
+# Create a new service file using:
+doas nano /etc/init.d/cloudflared
+With the following contents, replace <TOKEN> with
+the one noted above:
+#!/sbin/openrc-run
+
+name=$(basename $(readlink -f $0))
+
+pidfile="/var/run/$name.pid"
+
+command="/usr/bin/cloudflared"
+
+command_args=" --pidfile /var/run/$name.pid  --autoupdate-freq 24h0m0s tunnel run --token <TOKEN>"
+
+command_background=yes
+
+stdout_log="/var/log/$name.log"
+
+stderr_log="/var/log/$name.err"
+
+depend() {
+    need net
+    after firewall
+    use logger dns
+}
+Make the service file executable:
+doas chmod +x /etc/init.d/cloudflared
+Now, add the service file to OpenRC:
+# Remove the service from the default runlevel (just in case it was added earlier)
+doas rc-update del cloudflared
+
+# Add the service to the default runlevel
+doas rc-update add cloudflared default
+
+# Start the service immediately
+doas rc-service cloudflared start
+That’s it! You have successfully installed and set up Cloudflared on
+your system.
+Troubleshooting
+If you encounter any issues while following this guide, please check
+the official Cloudflared
+documentation for further help.
+Checkout OpenRC service init guide:
+https://github.com/OpenRC/openrc/blob/master/service-script-guide.md
+Back to Home
+
+

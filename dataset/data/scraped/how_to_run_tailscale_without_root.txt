@@ -1,0 +1,148 @@
+
+
+
+
+
+
+
+
+
+
+How to run Tailscale without root
+
+
+
+Home
+
+How to run Tailscale without root
+Longing to connect to your lab
+server?
+Mitanshu Sukhwani
+2025-06-07
+
+Get tailscale
+
+Fetch appropriate binaries for your architecture from here: Tailscale Packages -
+stable track
+Untar using:
+
+tar xvf tailscale_*.tgz
+
+Rename folder:
+
+mv tailscale_*/ tailscale/
+
+Add folder to path & alias by appending the following lines in
+~/.bashrc:
+
+export PATH="$HOME/tailscale:$PATH"
+alias tailscale='tailscale --socket=$HOME/tailscale/tailscaled.sock'
+With Systemd (Recommended)
+
+Create the systemd user config directory:
+
+mkdir -p ~/.config/systemd/user/
+
+Create a service file using:
+
+nano ~/.config/systemd/user/tailscaled.service
+
+With the following contents:
+
+[Unit]
+Description=Tailscale node agent
+Documentation=https://tailscale.com/kb/
+Wants=network-pre.target
+After=network-pre.target NetworkManager.service systemd-resolved.service
+
+[Service]
+ExecStart=%h/tailscale/tailscaled --state=%h/tailscale/tailscaled.state --socket=%h/tailscale/tailscaled.sock -tun=userspace-networking --port=41641
+ExecStopPost=%h/tailscale/tailscaled --cleanup
+
+Restart=always
+RestartSec=5
+
+StandardOutput=append:%h/tailscale/tailscaled.log
+StandardError=append:%h/tailscale/tailscaled.log
+
+[Install]
+WantedBy=default.target
+%h redirects to $HOME variable.
+
+Reload daemon, start & enable the service, and check the
+status:
+
+systemctl --user daemon-reload
+systemctl --user enable --now tailscaled.service
+systemctl --user status tailscaled.service
+
+Run the client with:
+
+tailscale up
+
+Log in and profit!
+
+Without Systemd (Hacky)
+
+Create a bash script
+
+nano $HOME/tailscale/start_tailscaled.sh
+
+With the following contents:
+
+#!/bin/bash
+
+# Path to the tailscaled binary
+TAILSCALED_START="$HOME/tailscale/tailscaled --state=$HOME/tailscale/tailscaled.state --socket=$HOME/tailscale/tailscaled.sock -tun=userspace-networking --port=41641"
+TAILSCALED_CLEAN="$HOME/tailscale/tailscaled --cleanup"
+
+# Function to check if tailscaled is running
+is_running() {
+    pgrep -x tailscaled > /dev/null
+}
+
+# Start tailscaled if not running
+if ! is_running; then
+    date
+    echo "Starting tailscaled..."
+    nohup $TAILSCALED_CLEAN >> $HOME/tailscale/tailscaled.log 2>&1 &
+    nohup $TAILSCALED_START >> $HOME/tailscale/tailscaled.log 2>&1 &
+else
+    date
+    echo "tailscaled is already running."
+fi
+
+Modify the crontab via
+
+crontab -e
+
+With
+
+@reboot $HOME/tailscale/start_tailscaled.sh
+* * * * * $HOME/tailscale/start_tailscaled.sh
+
+Run tailscale using:
+
+tailscale up
+
+Login using the url shown and enjoy!
+
+Bonus:
+If multiple people are using Tailscale without root, change to a free
+port and modify the following in your systemd.service/bash.script:
+
+from
+
+--port=41641
+to
+--port=41642
+
+Only in bash script:
+
+from
+pgrep -x tailscaled
+to
+pgrep -f 41642
+Back to Home
+
+

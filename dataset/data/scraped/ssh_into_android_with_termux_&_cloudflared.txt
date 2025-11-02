@@ -1,0 +1,191 @@
+
+
+
+
+
+
+
+
+
+
+SSH into Android with Termux & Cloudflared
+
+
+
+Home
+
+SSH into Android with Termux & Cloudflared
+Turn your Android device into a remotely
+accessible server
+Mitanshu Sukhwani
+2025-07-31
+
+I have been selfhosting for a couple of years, but every now and then
+I find something that makes my day.
+Recently, I tried out Nebula, the
+open-source Tailscale alternative
+and found Termux, a terminal
+emulator for Android, very useful to access common utilities like
+ping and ssh. I like to play around networking
+on odd devices and had created Tailscale on
+Kindle. Then I tried a similar approach as detailed on this github
+gist, Tailscale without
+root, but failed with Permission denied error. Not
+knowing anything about Android API, I had to switch directions towards
+my Cloudflared
++ Alpine Linux + Raspberri Pi Zero 2W setup.
+Here is a simple website
+being served from my phone, How amazing is that?!
+(It may or may not show for you depending on my phone battery or time
+of day XP)
+What You’ll Need
+
+An Android device with Termux
+installed
+A domain managed by Cloudflare
+
+Step 1: Setting Up
+Cloudflared on Termux
+First, let’s install and configure Cloudflared on your Android
+device.
+Install Cloudflared
+Open Termux and run:
+pkg upgrade
+pkg install cloudflared
+Create a Cloudflare Tunnel
+
+Visit https://one.dash.cloudflare.com
+Navigate to
+Networks -> Tunnels -> Create a tunnel
+Give your tunnel a memorable name and save it
+Look for the section that says “OR run the tunnel manually in your
+current terminal session only”
+Copy the <TOKEN> that appears after
+cloudflared tunnel run --token
+
+Set Up the Service
+To ensure your tunnel runs reliably, we’ll set it up as a
+service:
+# Create logging directory
+mkdir -p $PREFIX/var/service/cloudflared/log
+
+# Symlink logger
+ln -sf $PREFIX/share/termux-services/svlogger $PREFIX/var/service/cloudflared/log/run
+
+# Create the service run file
+nano $PREFIX/var/service/cloudflared/run
+In the nano editor, paste the following content (replace
+TOKEN with your actual token):
+#!/bin/bash
+exec cloudflared tunnel run --token TOKEN
+Make the file executable and start the service:
+chmod +x $PREFIX/var/service/cloudflared/run
+sv up cloudflared
+sv-enable cloudflared
+You can check if everything is working with:
+sv status cloudflared
+Log files for services are situated in
+$PREFIX/var/log/sv/<PKG>/ with the active log file
+named “current”.
+cat $PREFIX/var/log/sv/cloudflared/current
+Step 2: Configure SSH on
+Termux
+Now let’s set up the SSH server on your Android device.
+Install and Start SSH
+pkg install openssh
+sshd
+sv up sshd
+sv-enable sshd
+Find Your Username
+You’ll need this for connecting later:
+whoami
+The output will be something like u0_a264.
+Set Up Authentication
+You have two options for authentication:
+Option 1: Password
+Authentication
+Set a password for your user:
+passwd
+Option 2: SSH Key
+Authentication (Recommended)
+From your PC, copy your public key. If you don’t have one, generate
+a new SSH key first.
+# On your PC
+cat ~/.ssh/id_ed25519.pub
+Copy the output, then in Termux:
+nano ~/.ssh/authorized_keys
+Paste your public key and save the file.
+Step 3: Configure Cloudflare
+Access
+Now we need to set up the public hostname and access policies.
+Create a Public Hostname
+
+In your Cloudflare dashboard, create a new Public Hostname:
+ssh.example.com (replace with your domain)
+Set the following properties:
+
+Service type: SSH
+URL: 127.0.0.1:8022
+
+
+Set Up Access Control
+
+Go to Cloudflare Access → Applications
+Create a new application with these settings:
+
+Application name: ssh (or any name you prefer)
+Public hostname: ssh.example.com
+Add an access policy to allow your email address
+Browser rendering settings: SSH
+
+
+Step 4: Connect to Your Phone
+You’re now ready to SSH into your Android device!
+Via Browser
+
+Visit ssh.example.com in your web browser
+Authenticate using your email (as configured in Cloudflare
+Access)
+Enter your Termux username (e.g., u0_a264)
+Provide either your password or paste your private SSH key
+You’re in! You now have full terminal access to your Android
+device
+
+Making It Persistent
+To ensure your tunnel starts automatically when your phone boots:
+
+Install Termux:Boot from
+F-Droid
+Follow the setup instructions to enable the service on boot
+
+Troubleshooting
+
+If you need to stop the SSH service: pkill sshd
+Check tunnel/sshd status: sv status cloudflared or
+sv status sshd
+View tunnel logs: Check the log directory we created earlier
+
+Security Considerations
+
+Always use strong passwords or SSH keys
+Regularly update Termux packages with pkg upgrade
+Consider limiting access policies in Cloudflare to specific IP
+ranges if possible
+
+Conclusion
+You now have secure, remote access to your Android device from
+anywhere in the world!
+References
+
+Termux Remote
+Access
+Cloudflare
+SSH Browser Rendering
+Termux
+Services
+Runit
+Runscripts
+
+Back to Home
+
+
