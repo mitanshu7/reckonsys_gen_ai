@@ -65,9 +65,11 @@ async def web_search(query: str) -> str:
 
     return "\n---\n".join(formatted_search_results)
 
+
 def main():
     # Initialize and run the server
     mcp.run(transport="streamable-http")
+
 
 if __name__ == "__main__":
     main()
