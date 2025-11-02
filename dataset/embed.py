@@ -18,7 +18,7 @@ df["vector"] = model.encode(
     batch_size=120,
     show_progress_bar=True,
     convert_to_numpy=True,
-    precision='float32'
+    precision="float32",
 ).tolist()
 
 # Save to file
