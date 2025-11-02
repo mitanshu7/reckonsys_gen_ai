@@ -1,86 +1,26 @@
-
-
-
-
-
-
-
-
-
-
-Selfhosting Setup
-
-
-
-Home
-
-Selfhosting Setup
-Own your data, reduce reliance on Big
-Tech
-Mitanshu Sukhwani
-2025-06-09
-
-Anyone saw this documentary called Social Dillema
-(2020)?
-
-Tech experts from Silicon Valley sound the alarm on the dangerous
+Selfhosting Setup Home Selfhosting Setup Own your data, reduce reliance on Big
+Tech Mitanshu Sukhwani 2025-06-09 Anyone saw this documentary called Social Dillema
+(2020) ? Tech experts from Silicon Valley sound the alarm on the dangerous
 impact of social networking, which Big Tech use in an attempt to
-manipulate and influence.
-
-Well I did and got a little overboard with my emotions. The movie
+manipulate and influence. Well I did and got a little overboard with my emotions. The movie
 showed how so many of the little things apps do to make you stay hooked.
 My first response was to just delete all my social media. However,
 sometimes it gets lonely and with time your friends prod you to join a
 certain platform. I gave in after a bit, but always had a longing
 feeling to not use it. So after my Master’s ended, and while I was on a
-break, I tried to figure out selfhosting.
-Self-hosting is the practice of hosting and managing applications on
-your own server(s) instead of consuming from SaaSS
-providers. And good for me, I had an old cpu lying around to mess with
-to my hearts desire.
-
-
-Tincan
-
-The specs are underwhelming. It had 2GB of DDR2 RAM, Core 2 Duo E7500,
-and an external 1TB HDD.
-
-
-Tincan CPU
-
-It was a dusty old thing, so I took it apart and cleaned it. When I
+break, I tried to figure out selfhosting. Self-hosting is the practice of hosting and managing applications on
+your own server(s) instead of consuming from SaaSS providers. And good for me, I had an old cpu lying around to mess with
+to my hearts desire. Tincan The specs are underwhelming. It had 2GB of DDR2 RAM, Core 2 Duo E7500,
+and an external 1TB HDD. Tincan CPU It was a dusty old thing, so I took it apart and cleaned it. When I
 reassembled it, it would not start up! Turns out, little blue lego
-(short-circuit pin) are important and should not be discarded.
-
-
-Tincan Opened
-
-It used an LGA
-755 socket.
-
-
-Tincan CPU Socket
-
-I installed Debian on it.
+(short-circuit pin) are important and should not be discarded. Tincan Opened It used an LGA
+755 socket. Tincan CPU Socket I installed Debian on it.
 Learned about Docker as a way to
-run software with the least amount of headaches.
-My personal favorite is Nextcloud (Google Drive alternative),
-Audiobookshelf (Audible
+run software with the least amount of headaches. My personal favorite is Nextcloud (Google Drive alternative), Audiobookshelf (Audible
 alternative). I would host these sites on the Internet using Cloudflare
-Tunnel. My VPN of choice is Tailscale to connect to your devices
-without having setup a server for VPN specifically.
-
-
-Homepage
-
-Numerous Youtube videos and
+Tunnel . My VPN of choice is Tailscale to connect to your devices
+without having setup a server for VPN specifically. Homepage Numerous Youtube videos and
 stackoverflow posts have helped
 me troubleshoot tiniest of my problems. Many thanks to these wonderful
-people for existing.
-Find the software you want on awesome-selfhosted/awesome-selfhosted.
-Bonus
-Get a class
-1.111b top level domain name for less than a dollar on NameCheap and use it with Cloudflare.
-Back to Home
-
-
+people for existing. Find the software you want on awesome-selfhosted/awesome-selfhosted . Bonus Get a class
+1.111b top level domain name for less than a dollar on NameCheap and use it with Cloudflare . Back to Home

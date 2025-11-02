@@ -34,7 +34,7 @@ async def main(urls: str):
             )
 
             with open(f"{dataset_folder}/{file_name}", "w") as file:
-                file.writelines(soup.get_text())
+                file.writelines(soup.get_text(separator=" ", strip=True))
 
 
 if __name__ == "__main__":

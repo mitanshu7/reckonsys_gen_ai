@@ -1,48 +1,8 @@
-
-
-
-
-
-
-
-
-
-
-WSA with KernelSU
-
-
-
-
-Home
-
-WSA with KernelSU
-Run rooted Android on Windows using WSA with
-KernelSU
-Mitanshu Sukhwani
-2025-06-07
-
-
-Make sure the install is clean.
-Get WSA,
-
-Install:
+WSA with KernelSU Home WSA with KernelSU Run rooted Android on Windows using WSA with
+KernelSU Mitanshu Sukhwani 2025-06-07 Make sure the install is clean . Get WSA , Install:
 WSA_XXXX.X0000.X.0_XXXX_Release-Nightly-kernelsu-vX.X.X-MindTheGapps-XX.X-RemovedAmazon.7z
 - No Amazon App Store - Contains Google Play Store and Services -
-Contains KernelSU (for Root Access)
-Using this
-
-Sign into google and install google photos
-Sideload apps using the built-in files
-app
-Install KernelSU app
-apk
-Install ZygiskNext via
-KernelSU manager and reboot
-Install LSposed Zygisk
-via KernelSU manager and reboot
-Click notification for accessing lsposed.
-Install gpixelify from the repo and get \(\infty\) photos storage
-
-Back to Home
-
-
+Contains KernelSU (for Root Access) Using this Sign into google and install google photos Sideload apps using the built-in files
+app Install KernelSU app
+apk Install ZygiskNext via
+KernelSU manager and reboot Install LSposed Zygisk via KernelSU manager and reboot Click notification for accessing lsposed. Install gpixelify from the repo and get \(\infty\) photos storage Back to Home

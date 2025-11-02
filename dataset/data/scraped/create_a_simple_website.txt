@@ -1,92 +1,16 @@
-
-
-
-
-
-
-
-
-
-
-Create a simple website
-
-
-
-Home
-
-Create a simple website
-Like this one
-Mitanshu Sukhwani
-2025-06-07
-
-To create a simple (and free) website we will be using Github Pages.
-The following assumptions are made:
-
-You have working knowledge of git.
-You have a GitHub
-account.
-You are more comfortable with Markdown than HTML.
-
-Steps
-
-Follow the steps on GitHub
-Pages to have a initial functional website.
-Install pandoc from here for your operating
+Create a simple website Home Create a simple website Like this one Mitanshu Sukhwani 2025-06-07 To create a simple (and free) website we will be using Github Pages . The following assumptions are made: You have working knowledge of git . You have a GitHub account. You are more comfortable with Markdown than HTML . Steps Follow the steps on GitHub
+Pages to have a initial functional website. Install pandoc from here for your operating
 system. Pandoc helps converting Markdown to HTML, the languge of choice
-for www.
-In your git repository (better to clone and work locally)
-username.github.io, make two folders, one titled
-markdown to store markdown files and another titled
-html to store html.
-Create a blog post in the markdown folder with title
-post_title.md.
-In the top of the post_title.md, create a YAML front
-matter with the following fields:
----
-# 1. Basic Identification
-title: Post Title
-subtitle: Post Subtitle
-author: Your Name
-date: YYYY-MM-DD
-lang: en
-
-# 2. Metadata / SEO
-description: Post Description
-keywords: [keyword1, keyword2, keyword3]
----
-to make the blog post SEO friendly. You may skip adding keywords if
+for www. In your git repository (better to clone and work locally) username.github.io , make two folders, one titled markdown to store markdown files and another titled html to store html. Create a blog post in the markdown folder with title post_title.md . In the top of the post_title.md , create a YAML front
+matter with the following fields: --- # 1. Basic Identification title : Post Title subtitle : Post Subtitle author : Your Name date : YYYY-MM-DD lang : en # 2. Metadata / SEO description : Post Description keywords : [ keyword1 , keyword2 , keyword3 ] --- to make the blog post SEO friendly. You may skip adding keywords if
 you don’t have any. It is safer to add "" around the values
-of title, subtitle, author, and
-description fields.
-Convert the Markdown blog post to HTML using pandoc (execute in
-the repo folder):
-pandoc --standalone --output html/post_title.html markdown/post_title.md
-Create an index.md file in markdown
-folder. Create the index by hyperlinking the posts:
-1. [Post Title](html/post_title.html)
-Convert index.md to HTML using pandoc (execute in
-the repo folder):
-pandoc --standalone --output index.html markdown/index.md
-You need to create the index file at the root of your repository.
+of title , subtitle , author , and description fields. Convert the Markdown blog post to HTML using pandoc (execute in
+the repo folder): pandoc --standalone --output html/post_title.html markdown/post_title.md Create an index.md file in markdown folder. Create the index by hyperlinking the posts: 1. [ Post Title ](html/post_title.html) Convert index.md to HTML using pandoc (execute in
+the repo folder): pandoc --standalone --output index.html markdown/index.md You need to create the index file at the root of your repository.
 Since GitHub does now allow you to host the site from folder titled
-other than docs trivially.
-Commit, push, wait a bit, and see your website live!
-
-You can check the quality of your website on PageSpeed Insights. See this
-report for mitanshu7.github.io.
-Have a look at GitHub
-Pages documentation too.
-Bonus!
-I have created a python script to convert all markdown files to html
-to ease the process. The script also uses
-html/template.html to add Back to Home links on
-the bottom of every page.
-Please visit mitanshu7/mitanshu7.github.io!
-Honorary mention
-Hugo is one of the most popular
-open-source static site generators. Checkout their Quick start
-and Host and deploy
-page for a similar setup as above. It also comes with a plethora of Themes.
-Back to Home
-
-
+other than docs trivially. Commit, push, wait a bit, and see your website live! You can check the quality of your website on PageSpeed Insights . See this
+report for mitanshu7.github.io . Have a look at GitHub
+Pages documentation too. Bonus! I have created a python script to convert all markdown files to html
+to ease the process. The script also uses html/template.html to add Back to Home links on
+the bottom of every page. Please visit mitanshu7/mitanshu7.github.io ! Honorary mention Hugo is one of the most popular
+open-source static site generators. Checkout their Quick start and Host and deploy page for a similar setup as above. It also comes with a plethora of Themes . Back to Home

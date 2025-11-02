@@ -1,68 +1,11 @@
-
-
-
-
-
-
-
-
-
-
-Browse Intranet from Home
-
-
-
-Home
-
-Browse Intranet from Home
-When you need to get forms after leaving
-abrubtly
-Mitanshu Sukhwani
-2025-06-07
-
-For
+Browse Intranet from Home Home Browse Intranet from Home When you need to get forms after leaving
+abrubtly Mitanshu Sukhwani 2025-06-07 For
 IISER Tirupati Intranet, should work elsewhere with little
-modifications
-Requirements:
-
-Tailscale VPN logged in on the already running workstation at
-campus.
-Linux/MacOS device with sudo rights.
-Might work in Windows, however its way too complicated and out of
-the scope of this tutorial.
-
-Method
-
-If not already done, install and setup Tailscale on campus
-pc.
-Verify
-that you are logged into Tailscale and can SSH your account on the
-lab-workstation from a device you will carry back
-home.
-Open a terminal and issue:
-ssh <username>@<lab-workstation>
-to verify access
-Open a new terminal window (in local machine) and install sshuttle using:
-pip install sshuttle
-Issue command (on local machine):
-sshuttle --remote <username>@<lab-workstation> 0.0.0.0/0
-and leave the terminal window alone.
-You will be first asked to enter your local
-sudo password, and then your ssh password for the
-lab-workstation. After success, it should display
-
-
-
-Terminal
-
-
-This will route all the intranet traffic to your laptop, visit
-172.27.1.51 to confirm.
-
-For more
+modifications Requirements: Tailscale VPN logged in on the already running workstation at
+campus. Linux/MacOS device with sudo rights. Might work in Windows, however its way too complicated and out of
+the scope of this tutorial. Method If not already done, install and setup Tailscale on campus
+pc. Verify that you are logged into Tailscale and can SSH your account on the lab-workstation from a device you will carry back
+home. Open a terminal and issue: ssh < username > @ < lab-workstation > to verify access Open a new terminal window (in local machine) and install sshuttle using: pip install sshuttle Issue command (on local machine): sshuttle --remote < username > @ < lab-workstation > 0.0.0.0/0 and leave the terminal window alone. You will be first asked to enter your local sudo password, and then your ssh password for the
+lab-workstation. After success, it should display Terminal This will route all the intranet traffic to your laptop, visit 172.27.1.51 to confirm. For more
 information, see sshuttle
-Documentation.
-For Windows, see.
-Back to Home
-
-
+Documentation . For Windows, see . Back to Home

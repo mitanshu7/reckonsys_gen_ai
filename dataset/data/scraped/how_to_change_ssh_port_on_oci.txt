@@ -1,83 +1,21 @@
-
-
-
-
-
-
-
-
-
-
-How to change SSH Port on OCI
-
-
-
-Home
-
-How to change SSH Port on OCI
-A tutorial
-Mitanshu Sukhwani
-2025-06-07
-
-Steps
-
-NEEDED: have a new
+How to change SSH Port on OCI Home How to change SSH Port on OCI A tutorial Mitanshu Sukhwani 2025-06-07 Steps NEEDED : have a new
 user in sudo/wheel group with a password ready before doing anything
 here. Test the connection before proceeding. It will be handy in
 troubleshooting via the Cloud
 Shell in case things go awry. (Which is how this whole tutorial was
-executed :))
-Back up the original config file:
-sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
-Run sudo nano /etc/ssh/sshd_config to edit the SSH
-config file. Replace #Port 22 with
-Port <port-number>. Save the file, and do not restart
-the sshd service.
-If you restart the sshd service, it’ll show the error that
+executed :)) Back up the original config file: sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak Run sudo nano /etc/ssh/sshd_config to edit the SSH
+config file. Replace #Port 22 with Port <port-number> . Save the file, and do not restart
+the sshd service. If you restart the sshd service, it’ll show the error that
 selinux is preventing sshd from binding to new port. You now allow
-selinux using the command:
-sudo semanage port -a -t ssh_port_t -p tcp <port-number>
-Now when you restart the sshd service, it should happen without
+selinux using the command: sudo semanage port -a -t ssh_port_t -p tcp <port-number> Now when you restart the sshd service, it should happen without
 any issues. However, you still will not be able to connect, just yet. So
-don’t do it.
-Now modiify firewall rules to allow the mentioned port.
-
-List firewall rules using:
-sudo firewall-cmd --list-all
-Add rule for the port:
-sudo firewall-cmd --zone=public --permanent --add-port=<port-number>/tcp
-Reload firewall: sudo firewall-cmd --reload
-List rules again to see changes:
-sudo firewall-cmd --list-all
-
-Now go to https://cloud.oracle.com/compute/instances, Find your
-instance and go to the clickable subnet under primary vnic.
-There select the default security list and add an ingress
-rule:
-
-Select Add Ingress rule
-In Source CIDR, enter 0.0.0.0/0 to allow every ip.
-Enter the <port-number> in Destination Port
-Range.
-
-Restart the sshd service using:
-sudo systemctl restart sshd.
-Voila!, now you can connect to your instance on a custom ssh
-port. Go on, try it!
-You may delete ingress rule for port 22 once you can connect
-using the new port.
-
-For more, see: Eight ways
-to protect SSH access on your system | Enable Sysadmin
-References:
-
-How to Update the Default
-SSH Port of Oracle Linux 8 in OCI
-Oracle
-Linux 8: Configuring the Firewall
-Learn
-how to use SELinux.
-
-Back to Home
-
-
+don’t do it. Now modiify firewall rules to allow the mentioned port. List firewall rules using: sudo firewall-cmd --list-all Add rule for the port: sudo firewall-cmd --zone=public --permanent --add-port=<port-number>/tcp Reload firewall: sudo firewall-cmd --reload List rules again to see changes: sudo firewall-cmd --list-all Now go to https://cloud.oracle.com/compute/instances, Find your
+instance and go to the clickable subnet under primary vnic. There select the default security list and add an ingress
+rule: Select Add Ingress rule In Source CIDR, enter 0.0.0.0/0 to allow every ip. Enter the <port-number> in Destination Port
+Range. Restart the sshd service using: sudo systemctl restart sshd . Voila!, now you can connect to your instance on a custom ssh
+port. Go on, try it! You may delete ingress rule for port 22 once you can connect
+using the new port. For more, see: Eight ways
+to protect SSH access on your system | Enable Sysadmin References: How to Update the Default
+SSH Port of Oracle Linux 8 in OCI Oracle
+Linux 8: Configuring the Firewall Learn
+how to use SELinux. Back to Home

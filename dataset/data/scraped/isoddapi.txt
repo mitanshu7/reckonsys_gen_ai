@@ -1,55 +1,11 @@
-
-
-
-
-
-
-
-
-
-
-IsOddApi
-
-
-
-Home
-
-IsOddApi
-A playful REST API to check if a number is
-odd
-Mitanshu Sukhwani
-2025-06-09
-
-Backstory
-The other day isEven API made it
+IsOddApi Home IsOddApi A playful REST API to check if a number is
+odd Mitanshu Sukhwani 2025-06-09 Backstory The other day isEven API made it
 to the frontpage of Hacker
 News and one
-commenter requested the odd version of it. Well, I present to you IsOddApi!
-Implementation
-The best part? It uses isEven
-API in the backend and inverts the answer XD
-I saw this as a learning opportunity and took it. I got to use flask, a
+commenter requested the odd version of it. Well, I present to you IsOddApi ! Implementation The best part? It uses isEven
+API in the backend and inverts the answer XD I saw this as a learning opportunity and took it. I got to use flask , a
 lightweight WSGI web application framework. Given the very simple nature
 of the API, I thought to package it all as a Docker container. You can
-find the codes at mitanshu7/IsOddApi and
-mitanshu7/IsOddApiWebsite.
-The website uses The
-smallest Docker image to serve static websites to make it
-lean.
-Outcome
-isOdd API is a RESTful API that returns json.
-API URL: https://isoddapi.onrender.com/api/
-GET /isodd/<number>/
-Returns whether a given number is odd. Allowed numbers depend on your
-API tier. See Pricing below.
-URL Parameters
-number: the number you want to check
-Example
-https://isoddapi.onrender.com/api/isodd/7/
-{
-  "ad": "1995 NISSAN Maxima, green, leather, loaded, CD, auto start, sunroof, 4-door, great condtion, NOT FOR SALE",
-  "isodd": true
-}
-Back to Home
-
-
+find the codes at mitanshu7/IsOddApi and mitanshu7/IsOddApiWebsite . The website uses The
+smallest Docker image to serve static websites to make it lean . Outcome isOdd API is a RESTful API that returns json. API URL: https://isoddapi.onrender.com/api/ GET /isodd/<number>/ Returns whether a given number is odd. Allowed numbers depend on your
+API tier. See Pricing below. URL Parameters number: the number you want to check Example https://isoddapi.onrender.com/api/isodd/7/ { "ad" : "1995 NISSAN Maxima, green, leather, loaded, CD, auto start, sunroof, 4-door, great condtion, NOT FOR SALE" , "isodd" : true } Back to Home

@@ -1,62 +1,9 @@
-
-
-
-
-
-
-
-
-
-
-Tailscale on Kindle
-
-
-
-Home
-
-Tailscale on Kindle
-It’s a rite of passage to run tailscale on
-weird devices.
-Mitanshu Sukhwani
-2025-06-08
-
-Please visit mitanshu7/tailscale_kual
-for the appropriate code.
-Prerequisites:
-
-Jailbroken Kindle. (see)
-KUAL installed. (see)
-USBNetworking
-hack installed and enabled.
-Set up ssh
-keys for ease of use.
-
-Usage:
-
-Download the repository mentioned above.
-Get the latest tailscale binaries for the arm
-architecture from here. Or see
-releases page for a version that worked for me.
-Place the tailscale and tailscaled
-binaries in the tailscale/bin folder of this (local)
-repository.
-Place the tailscale folder into the extensions
-folder on your kindle.
-In the KUAL menu, start tailscaled first then start
-tailscale.
-You can find the url to login in the
-extensions/tailscale folder in
-tailscale_start_log.txt file, if this is a first time
-setup.
-Copy the login url to a modern web browser and login using your
-preferred SSO.
-After connecting the device should add the kindle to your
-Machines page on tailscale admin console. (this).
-Now you can see the (static) IP address assigned by Tailscale for
-your machine. You can use this ip to connect to kindle.
-Note: Make sure the kindle screen is on, else the kindle sleeps
-the wifi.
-
-Back to Home
-
-
+Tailscale on Kindle Home Tailscale on Kindle It’s a rite of passage to run tailscale on
+weird devices. Mitanshu Sukhwani 2025-06-08 Please visit mitanshu7/tailscale_kual for the appropriate code. Prerequisites: Jailbroken Kindle. ( see ) KUAL installed. ( see ) USBNetworking hack installed and enabled. Set up ssh
+keys for ease of use. Usage: Download the repository mentioned above. Get the latest tailscale binaries for the arm architecture from here . Or see
+releases page for a version that worked for me. Place the tailscale and tailscaled binaries in the tailscale/bin folder of this (local)
+repository. Place the tailscale folder into the extensions folder on your kindle. In the KUAL menu, start tailscaled first then start tailscale . You can find the url to login in the extensions/tailscale folder in tailscale_start_log.txt file, if this is a first time
+setup. Copy the login url to a modern web browser and login using your
+preferred SSO. After connecting the device should add the kindle to your Machines page on tailscale admin console. ( this ). Now you can see the (static) IP address assigned by Tailscale for
+your machine. You can use this ip to connect to kindle. Note: Make sure the kindle screen is on, else the kindle sleeps
+the wifi. Back to Home
