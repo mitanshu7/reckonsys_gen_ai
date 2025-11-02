@@ -1,0 +1,11 @@
+// https://code.visualstudio.com/docs/copilot/customization/mcp-servers
+
+{
+  "servers": {
+    // For remote server over streamable http
+    "web_search": {
+        // "url": "https://mcp.papermatch.me/mcp"
+        "url": "http://0.0.0.0:8000/mcp"
+    }
+  }
+}
