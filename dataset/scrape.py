@@ -39,7 +39,7 @@ async def main(urls: str):
 
 if __name__ == "__main__":
     # Read the file with links
-    crawled_filename = "dataset/data/crawled_links.json"
+    crawled_filename = "dataset/data/crawled/links.json"
     with open(crawled_filename, "r") as file:
         crawled_links = json.load(file)
 

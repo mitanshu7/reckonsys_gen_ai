@@ -10,11 +10,11 @@ import backoff
 START_URL = "https://blog.papermatch.me/"
 
 # Folder to store the results
-data_folder = "dataset/data/"
+data_folder = "dataset/data/crawled"
 os.makedirs(data_folder, exist_ok=True)
 
 # File name for the crawled data
-crawled_filename = "dataset/data/crawled_links.json"
+crawled_filename = f"{data_folder}/links.json"
 
 # Scrape blog for links
 # Add backoff for automatic retry in case the page fails 
