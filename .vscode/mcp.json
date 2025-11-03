@@ -3,8 +3,7 @@
 {
   "servers": {
     // For remote server over streamable http
-    "web_search": {
-        // "url": "https://mcp.papermatch.me/mcp"
+    "search": {
         "url": "http://0.0.0.0:8000/mcp"
     }
   }
