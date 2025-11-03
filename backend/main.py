@@ -2,11 +2,10 @@ import os
 from backend.schemas import TextRequest
 
 from fastapi import FastAPI
-from langchain_mcp_adapters.client import MultiServerMCPClient  
+from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
-
 
 
 # Reads variables from a .env file and sets them in os.environ
@@ -15,7 +14,7 @@ load_dotenv()
 
 model = ChatOpenAI(
     model="minimax/minimax-m2:free",  # Specify a model available on OpenRouter
-    api_key=os.getenv('OPENROUTER_API_KEY'),
+    api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
 )
 
@@ -23,16 +22,13 @@ app = FastAPI()
 
 mcp_client = MultiServerMCPClient(
     {
-        "search": {
-            "transport": "streamable_http",
-            "url": "http://0.0.0.0:9000/mcp"
-        },
+        "search": {"transport": "streamable_http", "url": "http://0.0.0.0:9000/mcp"},
     }
 )
 
 # ReAct template
 # https://smith.langchain.com/hub/hwchase17/react
-template = '''Answer the following questions as best you can. You have access to the following tools:
+template = """Answer the following questions as best you can. You have access to the following tools:
 
 {tools}
 
@@ -52,20 +48,17 @@ Final Answer: The final answer should be returned as a list of dictionaries/rows
 Begin!
 
 Question: {input}
-Thought:{agent_scratchpad}'''
+Thought:{agent_scratchpad}"""
+
 
 @app.post("/chat")
-async def chat(request:TextRequest):
- 
+async def chat(request: TextRequest):
     query = request.text
- 
+
     tools = await mcp_client.get_tools()
-    
+
     agent = create_agent(model=model, tools=tools, system_prompt=template)
-    
-    response = await agent.ainvoke(
-        {"messages": [{"role": "user", "content": query}]}
-    )
-    
+
+    response = await agent.ainvoke({"messages": [{"role": "user", "content": query}]})
+
     return response
-    
