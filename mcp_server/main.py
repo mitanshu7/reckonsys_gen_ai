@@ -152,6 +152,7 @@ def format_rag_search_result(result: dict) -> str:
         formatted_result = f"""
         Text: {entity.get("page_content", "Unknown")}
         Source: {entity.get("source", "Unknown")}
+        Confidence: {result.get("distance", "Unknown")}
         """
     else:
         logging.error("Entity not found in milvus results")
@@ -160,6 +161,7 @@ def format_rag_search_result(result: dict) -> str:
         formatted_result = """
         Text: Unknown
         Source: Unknown
+        Confidence: Unknown
         """
 
     logging.info(formatted_result)
