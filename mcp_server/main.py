@@ -12,7 +12,7 @@ from mixedbread import AsyncMixedbread
 load_dotenv()
 
 # Initialize FastMCP server
-mcp = FastMCP("tavily_search", host="0.0.0.0", port=8000)
+mcp = FastMCP("tavily_search", host="0.0.0.0", port=9000)
 
 # Initialise Tavily client
 tavily_client = AsyncTavilyClient(os.getenv("TAVILY_API_KEY"))
