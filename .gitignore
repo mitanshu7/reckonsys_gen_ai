@@ -11,3 +11,6 @@ wheels/
 
 # Ignore secrets
 .env
+
+# Ignore locks
+dataset/data/.milvus.db.lock

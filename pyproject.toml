@@ -9,7 +9,8 @@ dependencies = [
     "backoff>=2.2.1",
     "bs4>=0.0.2",
     "datasets>=4.3.0",
-    "langchain>=1.0.3",
+    "langchain[openai]>=1.0.3",
+    "langchain-mcp-adapters>=0.1.12",
     "langchain-text-splitters>=1.0.0",
     "mcp[cli]>=1.20.0",
     "mixedbread>=0.36.0",
@@ -19,4 +20,5 @@ dependencies = [
     "requests>=2.32.5",
     "sentence-transformers>=5.1.2",
     "tavily-python>=0.7.12",
+    "fastapi[standard]>=0.120.4",
 ]
