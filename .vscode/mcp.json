@@ -4,7 +4,7 @@
   "servers": {
     // For remote server over streamable http
     "search": {
-      "url": "http://0.0.0.0:8000/mcp"
+      "url": "http://0.0.0.0:9000/mcp"
     }
   }
 }

@@ -1,0 +1,13 @@
+[project]
+name = "reckonsys-gen-ai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mcp[cli]>=1.20.0",
+    "mixedbread>=0.36.0",
+    "pymilvus[milvus-lite]>=2.6.3",
+    "python-dotenv>=1.2.1",
+    "tavily-python>=0.7.12",
+]
